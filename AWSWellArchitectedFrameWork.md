@@ -1,93 +1,134 @@
-In addition to the AWS services and commands mentioned, there are several tools and services available for auditing AWS environments more comprehensively. Here’s a list of additional audit tools that can help ensure your AWS environment adheres to the Well-Architected Security Pillar:
+Here's a detailed audit checklist for the AWS Well-Architected Security Pillar, along with the commands to execute for each item. This checklist is derived from the AWS Well-Architected Security Pillar guidelines and workshops available on the AWS catalog site.
 
-### AWS Native Tools
+### Identity and Access Management (IAM)
 
-1. **AWS Trusted Advisor**
-   - Provides real-time guidance to help you provision your resources following AWS best practices. It includes checks for security, cost optimization, performance, and more.
+1. **Verify MFA on Root Account**
    ```sh
-   aws support describe-trusted-advisor-checks --language en
+   aws iam get-account-summary | grep AccountMFAEnabled
    ```
 
-2. **AWS Security Hub**
-   - Aggregates and prioritizes security findings from AWS services and partner solutions, helping you monitor and manage your security posture.
+2. **List IAM Users Without MFA**
    ```sh
-   aws securityhub get-findings
+   aws iam list-users | jq -r '.Users[].UserName' | while read user; do
+       aws iam list-mfa-devices --user-name $user
+   done
    ```
 
-3. **AWS Inspector**
-   - An automated security assessment service that helps improve the security and compliance of applications deployed on AWS.
+3. **Check for IAM Policies**
    ```sh
-   aws inspector list-assessment-runs
+   aws iam list-policies --scope Local
    ```
 
-4. **AWS Config**
-   - Provides a detailed view of the configuration of AWS resources in your account. This can be used to ensure compliance with internal policies and best practices.
+4. **Audit IAM Roles**
    ```sh
-   aws configservice get-compliance-details-by-config-rule --config-rule-name <rule_name>
+   aws iam list-roles
    ```
 
-### Third-Party Tools
-
-1. **Prowler**
-   - An open-source tool that performs AWS security best practices assessments, audits, and hardening.
+5. **Review IAM Group Memberships**
    ```sh
-   git clone https://github.com/prowler-cloud/prowler
-   cd prowler
-   ./prowler
+   aws iam get-group --group-name <groupname>
    ```
 
-2. **ScoutSuite**
-   - An open-source multi-cloud security-auditing tool that works with AWS, Azure, and GCP.
+### Detective Controls
+
+1. **Check CloudTrail Status**
    ```sh
-   git clone https://github.com/nccgroup/ScoutSuite
-   cd ScoutSuite
-   python scout.py aws --report-dir scout_report
+   aws cloudtrail describe-trails
+   aws cloudtrail get-trail-status --name <trailname>
    ```
 
-3. **Cloud Custodian**
-   - A rules engine for managing public cloud accounts. It helps ensure compliance and governance by defining policies to manage resources.
+2. **Verify AWS Config Service Status**
    ```sh
-   pip install c7n
-   custodian run -s output policy.yml
+   aws configservice describe-configuration-recorders
+   aws configservice describe-delivery-channels
    ```
 
-4. **Security Monkey**
-   - Monitors AWS accounts for policy changes and vulnerabilities.
+3. **Check GuardDuty Status**
    ```sh
-   git clone https://github.com/Netflix/security_monkey
-   cd security_monkey
+   aws guardduty list-detectors
    ```
 
-### Additional Audit and Monitoring Tools
-
-1. **Splunk**
-   - Provides operational intelligence and can integrate with AWS to collect, analyze, and act on the data from various AWS services.
+4. **Review AWS Config Rules Compliance**
    ```sh
-   # Set up Splunk integration with AWS
+   aws configservice describe-compliance-by-config-rule
    ```
 
-2. **ELK Stack (Elasticsearch, Logstash, Kibana)**
-   - Collects and analyzes logs from AWS services, enabling you to visualize data and create dashboards for security monitoring.
+5. **Inspect VPC Flow Logs**
    ```sh
-   # Set up ELK stack integration with AWS
+   aws ec2 describe-flow-logs
    ```
 
-3. **CloudTrail Insights**
-   - A feature of AWS CloudTrail that helps you identify and respond to unusual operational activity.
+### Infrastructure Protection
+
+1. **Check VPC Security Groups**
    ```sh
-   aws cloudtrail list-insight-selectors --trail-name <trailname>
+   aws ec2 describe-security-groups
    ```
 
-4. **Snyk**
-   - An open-source security management tool that integrates with AWS to find and fix vulnerabilities in dependencies.
+2. **Review Network ACLs (NACLs)**
    ```sh
-   # Set up Snyk integration with AWS
+   aws ec2 describe-network-acls
    ```
 
-### Regular Auditing Practices
+3. **Verify AWS WAF Configurations**
+   ```sh
+   aws waf list-web-acls
+   ```
 
-- **Automate Compliance Checks**: Use AWS Config Rules to automatically check the compliance of your AWS resources.
-- **Continuous Monitoring**: Implement continuous monitoring and alerting for suspicious activities using AWS CloudWatch and GuardDuty.
-- **Scheduled Audits**: Regularly perform scheduled audits using tools like Prowler or ScoutSuite to ensure ongoing compliance and security.
+4. **Check AWS Shield Protection**
+   ```sh
+   aws shield list-protections
+   ```
 
-These tools, combined with regular auditing and monitoring practices, can help ensure that your AWS environment remains secure and compliant with the AWS Well-Architected Framework. For more information, you can explore the detailed workshops and labs available on the [AWS Workshop Studio](https://catalog.workshops.aws/)【15†source】【16†source】【17†source】【18†source】【19†source】.
+### Data Protection
+
+1. **List Encrypted S3 Buckets**
+   ```sh
+   aws s3api list-buckets | jq -r '.Buckets[].Name' | while read bucket; do
+       aws s3api get-bucket-encryption --bucket $bucket
+   done
+   ```
+
+2. **Review EBS Volume Encryption**
+   ```sh
+   aws ec2 describe-volumes --query "Volumes[*].{ID:VolumeId,Encrypted:Encrypted}"
+   ```
+
+3. **Inspect RDS Instance Encryption**
+   ```sh
+   aws rds describe-db-instances --query "DBInstances[*].{DBInstanceIdentifier:DBInstanceIdentifier,StorageEncrypted:StorageEncrypted}"
+   ```
+
+4. **Verify KMS Keys**
+   ```sh
+   aws kms list-keys
+   ```
+
+### Incident Response
+
+1. **Review CloudWatch Alarms**
+   ```sh
+   aws cloudwatch describe-alarms
+   ```
+
+2. **Check Lambda Functions for Automated Responses**
+   ```sh
+   aws lambda list-functions
+   ```
+
+3. **Inspect S3 Bucket Policies for Audit Logs**
+   ```sh
+   aws s3api get-bucket-policy --bucket <bucketname>
+   ```
+
+4. **Evaluate Incident Response Plans**
+   - Ensure incident response playbooks are documented.
+   - Verify regular incident response drills are conducted.
+
+### Regular Auditing Steps
+
+- **Monthly**: Review IAM users and roles, CloudTrail logs, GuardDuty findings.
+- **Quarterly**: Conduct a comprehensive audit of all security controls and configurations.
+- **Annually**: Perform a full security assessment, including penetration testing and incident response drills.
+
+This checklist should help you systematically audit your AWS environment according to the best practices outlined in the AWS Well-Architected Security Pillar. For more detailed information and hands-on labs, you can refer to the [AWS Well-Architected Security Workshop](https://catalog.workshops.aws/well-architected-security/) and related resources【15†source】【16†source】【17†source】【18†source】【19†source】.
