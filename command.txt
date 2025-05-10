@@ -1,27 +1,27 @@
-prowler aws --profile NETS --region ap-southeast-1
+prowler aws --profile ABC --region ap-southeast-1
 
-cloudsplaining download --profile NETS
-cloudsplaining scan --input-file NETS.json --output report
+cloudsplaining download --profile ABC
+cloudsplaining scan --input-file ABC.json --output report
 
- change aws.spc, the region and profile name
-                                                                                                                                                                               
-┌──(dtpt㉿deloittePT-Kali)-[~/Desktop/NETS]
+change aws.spc, the region and profile name
+https://hub.steampipe.io/plugins/turbot/aws                                                                                                                                                            
+┌──(dtpt㉿ESPT-Kali)-[~/Desktop/ABC]
 └─$ mkdir my-dashboard
 cd my-dashboard
 powerpipe init
 Error: unknown command "init" for "powerpipe"
 Run 'powerpipe --help' for usage.
                                                                                                                                                                                                                   
-┌──(dtpt㉿deloittePT-Kali)-[~/Desktop/NETS/my-dashboard]
+┌──(dtpt㉿ESPT-Kali)-[~/Desktop/ABC/my-dashboard]
 └─$ powerpipe init             
 Error: unknown command "init" for "powerpipe"
 Run 'powerpipe --help' for usage.
                                                                                                                                                                                                                   
-┌──(dtpt㉿deloittePT-Kali)-[~/Desktop/NETS/my-dashboard]
+┌──(dtpt㉿ESPT-Kali)-[~/Desktop/ABC/my-dashboard]
 └─$ powerpipe mod init
-Created mod definition file '/home/dtpt/Desktop/NETS/my-dashboard/mod.pp'
+Created mod definition file '/home/dtpt/Desktop/ABC/my-dashboard/mod.pp'
                                                                                                                                                                                                                   
-┌──(dtpt㉿deloittePT-Kali)-[~/Desktop/NETS/my-dashboard]
+┌──(dtpt㉿ESPT-Kali)-[~/Desktop/ABC/my-dashboard]
 └─$ powerpipe mod install github.com/turbot/steampipe-mod-aws-compliance
 
 Installed 1 mod:
@@ -29,7 +29,7 @@ Installed 1 mod:
 local
 └── github.com/turbot/steampipe-mod-aws-compliance@v1.5.0
                                                                                                                 
-┌──(dtpt㉿deloittePT-Kali)-[~/Desktop/NETS/my-dashboard]
+┌──(dtpt㉿ESPT-Kali)-[~/Desktop/ABC/my-dashboard]
 └─$ powerpipe server
 [ Wait    ] Starting WorkspaceEvents Server
 [ Message ] WorkspaceEvents loaded
