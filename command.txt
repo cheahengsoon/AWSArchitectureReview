@@ -1,0 +1,43 @@
+prowler aws --profile NETS --region ap-southeast-1
+
+cloudsplaining download --profile NETS
+cloudsplaining scan --input-file NETS.json --output report
+
+ change aws.spc, the region and profile name
+                                                                                                                                                                               
+┌──(dtpt㉿deloittePT-Kali)-[~/Desktop/NETS]
+└─$ mkdir my-dashboard
+cd my-dashboard
+powerpipe init
+Error: unknown command "init" for "powerpipe"
+Run 'powerpipe --help' for usage.
+                                                                                                                                                                                                                  
+┌──(dtpt㉿deloittePT-Kali)-[~/Desktop/NETS/my-dashboard]
+└─$ powerpipe init             
+Error: unknown command "init" for "powerpipe"
+Run 'powerpipe --help' for usage.
+                                                                                                                                                                                                                  
+┌──(dtpt㉿deloittePT-Kali)-[~/Desktop/NETS/my-dashboard]
+└─$ powerpipe mod init
+Created mod definition file '/home/dtpt/Desktop/NETS/my-dashboard/mod.pp'
+                                                                                                                                                                                                                  
+┌──(dtpt㉿deloittePT-Kali)-[~/Desktop/NETS/my-dashboard]
+└─$ powerpipe mod install github.com/turbot/steampipe-mod-aws-compliance
+
+Installed 1 mod:
+
+local
+└── github.com/turbot/steampipe-mod-aws-compliance@v1.5.0
+                                                                                                                
+┌──(dtpt㉿deloittePT-Kali)-[~/Desktop/NETS/my-dashboard]
+└─$ powerpipe server
+[ Wait    ] Starting WorkspaceEvents Server
+[ Message ] WorkspaceEvents loaded
+[ Ready   ] Dashboard server started on 9033 and listening on local
+[ Message ] Visit http://localhost:9033
+[ Message ] Press Ctrl+C to exit
+[ Message ] Initialization complete
+[ Wait    ] WorkspaceEvents execution started: aws_compliance.benchmark.cis_v300
+[ Ready   ] Execution complete: aws_compliance.benchmark.cis_v300
+                                                                                                                                                                                                                  
+                                                                                
